@@ -7,18 +7,22 @@
  * License: GPL2
  */
 
-#connect to the database where we will store the global message
-#check the action hook where we will display this message with a shortcode
-#???
-#profit
-
 function im_admin_actions() {
-	add_menu_page("Add a Global Message", "Add a Global Message", 1, "Add Global Message", "im_admin", "dashicons-format-status");
+	add_menu_page( "Add a Global Message", "Add a Global Message", 1, "Add Global Message", "im_admin", "dashicons-format-status" );
 }
 
 function im_admin(){
-	echo "admin here yo";
-	include('im_add_message_form.php');
+	//call file with form do update of message there
+	include( 'im_add_message_form.php' );
 }
 
-add_action('admin_menu', 'im_admin_actions');
+function im_getmessage_shortcode() {
+	$wpdb           = new wpdb( 'root', 'root', 'wordpress', 'localhost' );
+	$table_name     = "wp_global_message";
+	$global_message = $wpdb->get_row(" SELECT message FROM $table_name" );
+
+	return "<strong>" . $global_message->message . "</strong>";
+}
+
+add_action( 'admin_menu', 'im_admin_actions' );
+add_shortcode( 'show_message', 'im_getmessage_shortcode' );
