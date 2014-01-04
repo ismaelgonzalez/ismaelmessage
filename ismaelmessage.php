@@ -6,9 +6,18 @@
  * Author: Ismael Gonzalez
  * License: GPL2
  */
-
 function im_admin_actions() {
 	add_menu_page( "Add a Global Message", "Add a Global Message", 1, "Add Global Message", "im_admin", "dashicons-format-status" );
+}
+
+function install_global_message_table() {
+	global $wpdb;
+
+	$table_name = $wpdb->prefix . "global_message";
+	
+	$sql = "CREATE TABLE $table_name ( id INT NOT NULL AUTO_INCREMENT, message TEXT NULL, PRIMARY KEY (id) );";
+
+	$wpdb->query( $sql );
 }
 
 function im_admin(){
@@ -17,12 +26,13 @@ function im_admin(){
 }
 
 function im_getmessage_shortcode() {
-	$wpdb           = new wpdb( 'root', 'root', 'wordpress', 'localhost' );
-	$table_name     = "wp_global_message";
+	global $wpdb;
+	$table_name     = $wpdb->prefix . "global_message";
 	$global_message = $wpdb->get_row(" SELECT message FROM $table_name" );
 
 	return "<strong>" . $global_message->message . "</strong>";
 }
 
+register_activation_hook(__FILE__, 'install_global_message_table');
 add_action( 'admin_menu', 'im_admin_actions' );
 add_shortcode( 'show_message', 'im_getmessage_shortcode' );

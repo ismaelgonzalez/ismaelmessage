@@ -1,17 +1,16 @@
 <?php
-$wpdb = new wpdb( 'root', 'root', 'wordpress', 'localhost' );
+global $wpdb;
 
-$table_name = "wp_global_message";
+$table_name = $wpdb->prefix . "global_message";
 
 	if ( $_POST ) {
-		$message_count = $wpdb->get_var( "SELECT COUNT(*) FROM wp_global_message" );
+		$message_count = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 
 		if ( $message_count > 0 ) {
 			$wpdb->update( $table_name, array( 'message' => $_POST['im_global_message'] ), array( 'id' => 1 ) );
 		} else {
 			$wpdb->insert( $table_name, array( 'message' => $_POST['im_global_message'] ) );
 		}
-
 	}
 ?>
 
