@@ -14,14 +14,16 @@ function install_global_message_table() {
 	global $wpdb;
 
 	$table_name = $wpdb->prefix . "global_message";
-	
-	$sql = "CREATE TABLE $table_name ( id INT NOT NULL AUTO_INCREMENT, message TEXT NULL, PRIMARY KEY (id) );";
 
-	$wpdb->query( $sql );
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '%$table_name%'" ) != $table_name ) {
+		$sql = "CREATE TABLE $table_name ( id INT NOT NULL AUTO_INCREMENT, message TEXT NULL, PRIMARY KEY (id) );";
+
+		$wpdb->query( $sql );
+	}
 }
 
 function im_admin(){
-	//call file with form do update of message there
+	//call file with form, do update of message there
 	include( 'im_add_message_form.php' );
 }
 

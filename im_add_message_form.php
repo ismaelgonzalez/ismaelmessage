@@ -16,10 +16,9 @@ $table_name = $wpdb->prefix . "global_message";
 
 <div class="wrap">
 	<h2>Add A Global Message</h2>
-	<h3>This global message will be printed anywhere else on the blog!</h3>
+	<h3>This global message will be printed anywhere else on the blog by using the shortcode [show_message] in your post content!</h3>
 
 	<form method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
-		<h4>Add a new Global Message</h4>
 		<p>
 			<?php
 				_e( "Global Message:" );
