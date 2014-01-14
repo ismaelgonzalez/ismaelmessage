@@ -12,6 +12,7 @@ class IsmaelMessage {
         return '<strong>' . $global_message . '</strong>';
     }
 
+
     public function im_admin_actions() {
         add_menu_page( "Add a Global Message", "Add a Global Message", 1, "add-global-message", array( IsmaelMessage, 'im_admin' ), "dashicons-format-status" );
     }
