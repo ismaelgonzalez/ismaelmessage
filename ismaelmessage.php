@@ -1,38 +1,45 @@
 <?php
-/**
- * Plugin Name: Ismael Message
- * Description: This will just add a global message that can be displayed anywhere.
- * Version: 1.0
- * Author: Ismael Gonzalez
- * License: GPL2
- */
-function im_admin_actions() {
-	add_menu_page( "Add a Global Message", "Add a Global Message", 1, "Add Global Message", "im_admin", "dashicons-format-status" );
+class IsmaelMessage {
+    public function __construct()
+    {
+        add_option( 'global_message' );
+        add_shortcode( 'show_message', array( $this, 'shortcode' ) );
+    }
+
+    public function shortcode()
+    {
+        $global_message = get_option( 'global_message' );
+        return '<strong>' . $global_message . '</strong>';
+    }
+
+    public function im_admin_actions() {
+        add_menu_page( "Add a Global Message", "Add a Global Message", 1, "add-global-message", array( IsmaelMessage, 'im_admin' ), "dashicons-format-status" );
+    }
+
+    public function im_admin(){
+        add_option( 'global_message' );
+        $global_message = get_option( 'global_message' );
+        ?>
+        <div class="wrap">
+            <h2>Add A Global Message</h2>
+            <h3>This global message will be printed anywhere else on the blog!</h3>
+
+            <form method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI'] ); ?>">
+                <h4>Add a new Global Message</h4>
+                <p>
+                    Global Message:
+                    <input type="text" name="im_global_message" value="<?php echo $global_message; ?>" size="40">
+                </p>
+                <p class="submit">
+                    <input type="submit" name="Submit" value="Update Global Message">
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
+    public function save_global_message( $global_message )
+    {
+        update_option( 'global_message', $global_message );
+    }
 }
-
-function install_global_message_table() {
-	global $wpdb;
-
-	$table_name = $wpdb->prefix . "global_message";
-	
-	$sql = "CREATE TABLE $table_name ( id INT NOT NULL AUTO_INCREMENT, message TEXT NULL, PRIMARY KEY (id) );";
-
-	$wpdb->query( $sql );
-}
-
-function im_admin(){
-	//call file with form do update of message there
-	include( 'im_add_message_form.php' );
-}
-
-function im_getmessage_shortcode() {
-	global $wpdb;
-	$table_name     = $wpdb->prefix . "global_message";
-	$global_message = $wpdb->get_row(" SELECT message FROM $table_name" );
-
-	return "<strong>" . $global_message->message . "</strong>";
-}
-
-register_activation_hook(__FILE__, 'install_global_message_table');
-add_action( 'admin_menu', 'im_admin_actions' );
-add_shortcode( 'show_message', 'im_getmessage_shortcode' );
